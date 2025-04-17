@@ -165,7 +165,10 @@ function displayTranscript(text) {
     if(text){
         console.log("Transcript text:", text);
     }
-    const words = text.split(/(\s+)/);
+    const lines = text.split('\n').filter(line => line.trim() !== '');
+    const title = lines[0].trim();
+    const story = lines.slice(1).join('').trim();
+    const words = story.split(/\s+/);
     transcriptDisplay.innerHTML = '';
 
     wordElements = [];
@@ -442,7 +445,7 @@ document.getElementById("sendDataButton").addEventListener("click", function() {
         proficiency: proficiency,
         fileName: uploadedFileName,
         csvData: csvContent,
-        batch: "EN-Baseline",
+        batch: "Batch-1",
         language: "en",
     };
 
