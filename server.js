@@ -11,14 +11,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch(err => console.error("MongoDB error:", err));
 
 const userSchema = new mongoose.Schema({
   email: String,
   storyOrder: Object,       
-  currentIndex: Number
+  currentIndex: Number,
+  language: String
 });
 
 const User = mongoose.model('User', userSchema);
@@ -39,8 +40,8 @@ function getShuffledStoryOrder(language) {
 }
 
 app.post('/start-session', async (req, res) => {
-  const { email, language } = req.body;
-
+  const { email, language, storyNames } = req.body;
+    //console.log("Story Names", storyNames)
   let user = await User.findOne({ email });
 
   if (user) {
@@ -55,15 +56,24 @@ app.post('/start-session', async (req, res) => {
       currentStory: storyAtIndex
     });
   } else {
-    const { storyOrder, list } = getShuffledStoryOrder(language);
-    user = new User({ email, storyOrder, currentIndex: 0 });
+    const shuffled = [...storyNames];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    const storyOrder = {};
+    shuffled.forEach((name, idx) => {
+        storyOrder[name] = idx;
+    });
+    user = new User({ email, storyOrder, currentIndex: 0, language });
     await user.save();
     return res.json({
       success: true,
       newSession: true,
       currentIndex: 0,
       storyOrder,
-      currentStory: list[0]
+      currentStory: shuffled[0]
     });
   }
 });

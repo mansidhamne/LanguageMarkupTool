@@ -30,16 +30,19 @@ async function getKeys() {
     }
 }
 
-getKeys();
-
 async function fetchStoryFiles() {
+    if (!API_KEY || !FOLDER_ID) {
+        console.log("API keys not initialized.");
+        return;
+      }
+
     const url = `https://www.googleapis.com/drive/v3/files?q='${FOLDER_ID}'+in+parents&key=${API_KEY}`;
     const response = await fetch(url);
     const data = await response.json();
 
     storyFiles = data.files
         .filter(file => file.name.endsWith('.txt'))
-        .sort((a, b) => a.name.localeCompare(b.name)) // Ensure consistent order
+        .sort((a, b) => a.name.localeCompare(b.name)) 
         .map(file => ({
             url: `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${API_KEY}`,
             name: file.name
@@ -49,26 +52,32 @@ async function fetchStoryFiles() {
         loadCurrentStory();
     }
     numberOfStories = storyFiles.length;
-    console.log("Number of stories: ", numberOfStories);
+    // console.log(storyFiles)
+    // console.log("Number of stories: ", numberOfStories);
 }
 
 async function startSession(email, language) {
-    const res = await fetch('/start-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, language })
-    });
-    const data = await res.json();
-    console.log(data);
-  
-    // Assign returned values
-    shuffledOrder = Object.keys(data.storyOrder).sort((a, b) => data.storyOrder[a] - data.storyOrder[b]);
-    currentStoryIndex = data.currentIndex;
-  
-    if (storyFiles.length > 0) {
-      loadCurrentStory();
-    }
+  const res = await fetch('/start-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      email, 
+      language,
+      storyNames: storyFiles.map(f => f.name)
+    })
+  });
+
+  const data = await res.json();
+//   console.log(data);
+
+  shuffledOrder = Object.keys(data.storyOrder).sort((a, b) => data.storyOrder[a] - data.storyOrder[b]);
+  currentStoryIndex = data.currentIndex;
+
+  if (storyFiles.length > 0) {
+    loadCurrentStory();
+  }
 }
+
   
 async function updateProgress(email) {
     const res = await fetch('/update-progress', {
@@ -77,7 +86,7 @@ async function updateProgress(email) {
     body: JSON.stringify({ email })
   });
   const data = await res.json();
-  console.log(data);
+//   console.log(data);
 
   if (data.success && data.nextStory) {
     currentStoryIndex = shuffledOrder.indexOf(data.nextStory);
@@ -149,7 +158,7 @@ audioFileInput.addEventListener('change', function (e) {
 
 document.getElementById("fileSelect").addEventListener("change", function() {
     const fileUrl = this.value;
-    console.log("Selected file URL:", fileUrl);
+    //console.log("Selected file URL:", fileUrl);
     if (fileUrl) {
         fetch(fileUrl)
         .then(response => response.text())
@@ -163,12 +172,13 @@ document.getElementById("fileSelect").addEventListener("change", function() {
 
 function displayTranscript(text) {
     if(text){
-        console.log("Transcript text:", text);
+        //console.log("Transcript text:", text);
     }
     const lines = text.split('\n').filter(line => line.trim() !== '');
     const title = lines[0].trim();
-    const story = lines.slice(1).join('').trim();
-    const words = story.split(/\s+/);
+    const story = lines.slice(1).join(' ').trim();
+    const words = story.match(/\S+|\s+/g);  
+    //console.log(words);
     transcriptDisplay.innerHTML = '';
 
     wordElements = [];
@@ -176,7 +186,7 @@ function displayTranscript(text) {
     activeGroups = [];
     currentGroupId = 0;
 
-    for (let i = 0; i < words.length; i += 2) {  
+    for (let i = 0; i < words.length; i+=2) {  
         if (words[i].trim() !== '') {
             const wordSpan = document.createElement('span');
             wordSpan.classList.add('word');
@@ -449,9 +459,9 @@ document.getElementById("sendDataButton").addEventListener("click", function() {
         language: "en",
     };
 
-    console.log(payload);
+    //console.log(payload);
 
-    fetch("https://script.google.com/macros/s/AKfycbwsCBaCD-SSaGVr7ljLfZ8Zqfw35-WHUkyIW0bP62qVeg-nNrzhO93nyxMkFtjB4Vl0/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwNgRaR0Z73CeSPeK4y740Cm6M8sEW1IiheS-So8mYaZeDZBcKj21JlQVZIv8-ND_k2/exec", {
         method: "POST",
         mode: "no-cors",
         headers: {
@@ -484,8 +494,9 @@ document.getElementById("sendDataButton").addEventListener("click", function() {
 
 async function initSession(email, language) {
     userEmail = email;
+    await getKeys();
+    await fetchStoryFiles();        
     await startSession(email, language);   
-    await fetchStoryFiles();               
   }
 
 window.addEventListener("DOMContentLoaded", () => {
