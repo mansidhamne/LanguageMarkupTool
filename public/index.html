@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Markup Tool - Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1 class="main-header">Welcome to the Language Markup Tool</h1>
+    <div class="info">
+        <p id="instructions">Please fill out the form below to get started:</p>
+
+        <form action="markup.html" method="GET" class="container">
+            <label for="name" id="label-style">Full Name:</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your full name">
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email">
+
+            <label for="proficiency">Reader's Proficiency:</label>
+            <select id="proficiency" name="proficiency" required>
+                <option value="" disabled selected>Select proficiency level</option>
+                <option value="1">Limited Working Proficiency</option>
+                <option value="2">Full Professional Proficiency</option>
+            </select>
+
+            <p id="instructions">Introduction:</p>
+            <h4>This tool is designed to assist in marking natural syntactic and prosodic breaks in English texts. 
+                We’re looking for your expertise in identifying appropriate pause points — similar to those used when reading aloud stories to children aged 6–12
+                to segment text into meaningful, fluent units. The annotated data will be used
+                for studying speech rhythm, prosody, and comprehension. These annotations will be used in 
+                linguistic analysis, fluency modeling, and educational tools.
+            </h4>
+
+            <p id="instructions">How It Works:</p>
+            <ul class="instructions-list">
+                <li><strong>Before you begin:</strong> Ensure you fill in your name, email, and proficiency level.</li>
+                <li><strong>Loading the text:</strong> Stories will be loaded sequentially once you start with the experiment.</li>
+                <li><strong>Mark Allowed Pauses:</strong> Click on a word to add a marker <strong class="red-pipe-info">(a single pipe |)</strong> indicating an allowed pause between the current word and the next. Click the word again to remove the marker.</li>
+                <li><strong>Display of Prosodic Phrases:</strong> You will see a display with the words of the text grouped together as derived from your markings. If you feel that the grouping can be improved, please go back to the previous step.</li>
+                <li><strong>Send Data:</strong> Before starting a new story, send the processed data by clicking on the <strong id="sd-bold">Send Data </strong>button.</li>
+            </ul>
+
+            <p id="instructions">Example Markup</p>
+            <h2 id="example">Given Text:</h2>
+            <p class="given-text">Tom found a tiny kitten. It followed him home. He gave it milk and took care of it. They became best friends forever.</p>
+
+            <h2 id="example">Mark your text in similar manner:</h2>
+            <div class="marked-text-container">
+                <p>Tom found <span class="red-pipe">|</span> a tiny kitten. <span class="red-pipe">|</span> It followed him home.<span class="red-pipe">|</span> He gave it milk <span class="red-pipe">|</span> and took care of it.<span class="red-pipe">|</span> They became <span class="red-pipe">|</span> best friends forever.<span class="red-pipe">|</span></p>
+            </div>
+            <p class="label-info">The red pipe between the words marks the allowed pause.</p>
+            
+            <div class="image-container">
+                <h2 id="example">Display of Prosodic Phrases:</h2>
+                <img src="marked_example.png" alt="Marked Text Example" width="100%">
+            </div>
+
+            <button type="submit" id="start-button">Start Markup</button>
+        </form>
+    </div>
+</body>
+</html>
