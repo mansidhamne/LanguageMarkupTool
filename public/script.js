@@ -177,7 +177,8 @@ function displayTranscript(text) {
     const lines = text.split('\n').filter(line => line.trim() !== '');
     const title = lines[0].trim();
     const story = lines.slice(1).join(' ').trim();
-    const words = story.match(/\S+|\s+/g);  
+    //const story = "Tom found a tiny kitten. It followed him home. He gave it milk and took care of it. They became best friends forever." 
+    const words = story.match(/\S+|\s+/g); 
     //console.log(words);
     transcriptDisplay.innerHTML = '';
 

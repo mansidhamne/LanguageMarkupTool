@@ -32,8 +32,8 @@
         </div>
 
         <div class="file-progress">
-            <label><span id="storyProgress">Story 0 of 8</span></label>
-            <progress id="progressBar" value="0" max="8"></progress>
+            <label><span id="storyProgress">Story 0 of 18</span></label>
+            <progress id="progressBar" value="0" max="18"></progress>
         </div>
         
         <audio id="audioPlayer" controls class="audio-player">
@@ -55,6 +55,9 @@
         <textarea id="output" readonly placeholder="The processed transcript will appear here..."></textarea>
         <div class="phrases-container" id="outputArea"></div>
     </div>
+    <p class="contact-info">
+        In case of any queries or errors, please contact: <a href="mailto:mansi.dhamne22@spit.ac.in">mansi.dhamne22@spit.ac.in</a>
+    </p>   
     <script>
         const params = new URLSearchParams(window.location.search);
         const name = params.get("name");
