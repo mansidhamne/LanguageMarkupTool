@@ -24,21 +24,6 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-function getShuffledStoryOrder(language) {
-  const grades = ['G3', 'G4', 'G5', 'G6', 'G7', 'G8'];
-  const chunks = ['C1', 'C2', 'C3'];
-  const prefix = language === 'hi' ? 'HI-B' : 'EN-B';
-  let storyNames = [];
-  grades.forEach(g => chunks.forEach(c => storyNames.push(`${prefix}-${g}-${c}.txt`)));
-  for (let i = storyNames.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [storyNames[i], storyNames[j]] = [storyNames[j], storyNames[i]];
-  }
-  const storyOrder = {};
-  storyNames.forEach((name, idx) => storyOrder[name] = idx);
-  return { storyOrder, list: storyNames };
-}
-
 app.post('/start-session', async (req, res) => {
   const { email, language, storyNames } = req.body;
     //console.log("Story Names", storyNames)
