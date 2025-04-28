@@ -27,7 +27,7 @@ const User = mongoose.model('User', userSchema);
 app.post('/start-session', async (req, res) => {
   const { email, language, storyNames } = req.body;
     //console.log("Story Names", storyNames)
-  let user = await User.findOne({ email });
+  let user = await User.findOne({ email, language });
 
   if (user) {
     const storyAtIndex = Object.keys(user.storyOrder).find(
