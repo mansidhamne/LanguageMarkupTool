@@ -456,7 +456,7 @@ document.getElementById("sendDataButton").addEventListener("click", function() {
         proficiency: proficiency,
         fileName: uploadedFileName,
         csvData: csvContent,
-        batch: "Batch-3",
+        batch: "Batch-1",
         language: "en",
     };
 
